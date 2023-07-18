@@ -1,4 +1,5 @@
 import { AsyncOrSync } from 'ts-essentials';
+import { Interface } from '@ethersproject/abi';
 import {
   Token,
   Address,
@@ -18,6 +19,7 @@ import { DemeterProtocolData } from './types';
 import { SimpleExchange } from '../simple-exchange';
 import { DemeterProtocolConfig, Adapters } from './config';
 import { DemeterProtocolEventPool } from './demeter-protocol-pool';
+import ERC20ABI from '../../abi/erc20.json';
 
 export class DemeterProtocol
   extends SimpleExchange
@@ -26,14 +28,15 @@ export class DemeterProtocol
   protected eventPools: DemeterProtocolEventPool;
 
   readonly hasConstantPriceLargeAmounts = false;
-  // TODO: set true here if protocols works only with wrapped asset
   readonly needWrapNative = true;
-
   readonly isFeeOnTransferSupported = false;
 
   public static dexKeysWithNetwork: { key: string; networks: Network[] }[] =
     getDexKeysWithNetwork(DemeterProtocolConfig);
 
+  public static erc20Interface = new Interface(ERC20ABI);
+
+  vaultUSDBalance: number = 0;
   logger: Logger;
 
   constructor(
